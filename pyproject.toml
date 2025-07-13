@@ -1,0 +1,11 @@
+[project]
+name = "ai-tech-coffee-hours"
+version = "0.1.0"
+description = "AI Tech Coffee Hours - Learning Sessions"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "toml>=0.10.2",
+]
