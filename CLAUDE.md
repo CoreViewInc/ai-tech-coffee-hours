@@ -37,18 +37,26 @@ AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name
 ### Main Learning Session
 ```bash
 # Run the interactive LLM demonstration
-python session_1/primitives/agent_primitives.py
+python main.py
 ```
 
-This launches an interactive menu with three modes:
+This launches an interactive menu with four modes:
 1. **Stateless Interactive Chat** - Demonstrates LLM statelessness (no memory between calls)
 2. **Stateful Interactive Chat** - Shows conversation history preservation
-3. **Exit**
+3. **Chat with Tools (Function Calling)** - Demonstrates how LLMs can use functions/tools
+4. **Exit**
 
-### Project Entry Point
+### Individual Components
+You can also run each component separately:
 ```bash
-# Basic project entry point
-python main.py
+# Run stateless chat demo
+python session_1/primitives/stateless_chat.py
+
+# Run stateful chat demo
+python session_1/primitives/stateful_chat.py
+
+# Run tools/function calling demo
+python session_1/primitives/tools_chat.py
 ```
 
 ## Architecture
@@ -56,20 +64,28 @@ python main.py
 ### Session-Based Learning Structure
 - **`session_1/`**: Foundation concepts
   - **`primitives/`**: Basic LLM interaction patterns
-    - `agent_primitives.py`: Core Azure OpenAI integration with stateless vs stateful demonstrations
+    - `shared_utils.py`: Shared utilities for Azure OpenAI client creation
+    - `stateless_chat.py`: Demonstrates stateless LLM interactions (no memory)
+    - `stateful_chat.py`: Demonstrates stateful LLM interactions (with conversation history)
+    - `tools_chat.py`: Demonstrates function calling/tools capability
   - **`framework/`**: Higher-level agent abstractions
     - `agent_framework.py`: (Currently empty - placeholder for framework code)
     - `artisan_agent.py`: (Currently empty - placeholder for specialized agent)
 
 ### Key Architectural Concepts
 
-1. **Stateless vs Stateful LLM Interactions**: The core educational concept demonstrated in `agent_primitives.py`
+1. **Stateless vs Stateful LLM Interactions**: Core educational concepts
    - Stateless: Each API call is independent with no conversation memory
    - Stateful: Conversation history is maintained and sent with each request
 
-2. **Token Usage Tracking**: All interactions display token consumption (input/output/total) to teach cost awareness
+2. **Function Calling/Tools**: Demonstrates how LLMs can use external functions
+   - Weather information retrieval
+   - Time queries
+   - Mathematical calculations
 
-3. **Azure OpenAI Integration**: Uses the official OpenAI Python SDK with Azure-specific configuration
+3. **Token Usage Tracking**: All interactions display token consumption (input/output/total) to teach cost awareness
+
+4. **Azure OpenAI Integration**: Uses the official OpenAI Python SDK with Azure-specific configuration
 
 ## Development Patterns
 
