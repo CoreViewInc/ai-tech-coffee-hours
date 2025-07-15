@@ -96,7 +96,7 @@ def demonstrate_tools_chat():
             response_message = response.choices[0].message
             tool_calls = response_message.tool_calls
             
-            # Check if the model wants to use a tool
+            # Check if the model wantgs to use a tool
             if tool_calls:
                 # Add the assistant's response to messages
                 messages.append(response_message)

@@ -12,26 +12,101 @@ A hands-on learning repository for understanding Large Language Model (LLM) fund
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.12+
-- UV package manager
 - Azure OpenAI account and deployment
+
+### Install Python 3.12+
+
+#### macOS
+```bash
+# Using Homebrew (recommended)
+brew install python@3.12
+
+# Or download from python.org
+# Visit https://www.python.org/downloads/macos/
+```
+
+#### Windows
+```bash
+# Using winget (Windows 10+)
+winget install Python.Python.3.12
+
+# Or download from python.org
+# Visit https://www.python.org/downloads/windows/
+```
+
+#### Linux (Ubuntu/Debian)
+```bash
+# Add deadsnakes PPA for latest Python versions
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.12 python3.12-pip python3.12-venv
+
+# Verify installation
+python3.12 --version
+```
+
+#### Linux (CentOS/RHEL/Fedora)
+```bash
+# Fedora
+sudo dnf install python3.12
+
+# CentOS/RHEL (may need EPEL)
+sudo yum install python3.12
+
+# Or compile from source if not available in repos
+```
+
+### Install UV Package Manager
+
+UV is a fast Python package installer and resolver. Install it with:
+
+```bash
+# macOS and Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Alternative: Install via pip
+pip install uv
+
+# Verify installation
+uv --version
+```
 
 ### Setup
 
-1. **Install dependencies**:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-username/ai-tech-coffee-hours.git
+   cd ai-tech-coffee-hours
+   ```
+
+2. **Verify Python and UV installation**:
+   ```bash
+   # Check Python version (should be 3.12+)
+   python --version
+   # or
+   python3 --version
+   
+   # Check UV installation
+   uv --version
+   ```
+
+3. **Install dependencies**:
    ```bash
    uv pip install -e .
    ```
 
-2. **Configure Azure OpenAI**:
+4. **Configure Azure OpenAI**:
    ```bash
    cp .env.example .env
    # Edit .env with your Azure OpenAI credentials
    ```
 
-3. **Run the interactive learning session**:
+5. **Run the interactive learning session**:
    ```bash
-   python session_1/primitives/agent_primitives.py
+   python main.py
    ```
 
 ## 🎮 Interactive Demonstrations
