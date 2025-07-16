@@ -61,12 +61,6 @@ sudo yum install python3.12
 UV is a fast Python package installer and resolver. Install it with:
 
 ```bash
-# macOS and Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Windows (PowerShell)
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-
 # Alternative: Install via pip
 pip install uv
 
@@ -93,35 +87,62 @@ uv --version
    uv --version
    ```
 
-3. **Install dependencies**:
+3. **Create and activate a virtual environment using UV**:
+   ```bash
+   # Create virtual environment
+   uv venv
+   
+   # Activate virtual environment
+   # On macOS/Linux:
+   source .venv/bin/activate
+   
+   # On Windows:
+   # .venv\Scripts\activate
+   ```
+
+4. **Install dependencies**:
    ```bash
    uv pip install -e .
    ```
 
-4. **Configure Azure OpenAI**:
+5. **Configure Azure OpenAI**:
    ```bash
    cp .env.example .env
    # Edit .env with your Azure OpenAI credentials
    ```
 
-5. **Run the interactive learning session**:
+6. **Run the interactive learning session**:
    ```bash
    python main.py
    ```
 
 ## 🎮 Interactive Demonstrations
 
-The main learning experience offers three modes:
+The main learning experience offers five modes:
 
 ### 1. Stateless Interactive Chat
 Experience how LLMs work naturally - each conversation is independent with no memory between exchanges. Perfect for understanding the fundamental stateless nature of language models.
 
-### 2. Stateful Interactive Chat  
+### 2. Stateless Chat with Context 
+Learn how LLMs can answer questions based on provided context. This demo includes three fake Eminem-style rap songs:
+- **"Heart on Fire"** - A love-themed song
+- **"Rising from Ashes"** - About overcoming challenges
+- **"Digital Dreams"** - Social media and technology critique
+
+The LLM can answer questions about these songs while remaining stateless - demonstrating how context windows work without conversation memory.
+
+### 3. Stateful Interactive Chat  
 See how conversation history is preserved by explicitly sending context with each request. Watch how token usage grows as conversations get longer.
 
-### 3. Token Usage Tracking
+### 4. Chat with Tools (Function Calling)
+Explore how LLMs can use external functions/tools like weather queries, time checks, and calculations.
+
+### 5. Artisan Agent
+Experience a decision-making loop that demonstrates higher-level agent capabilities.
+
+### Token Usage Tracking
 Every response shows real-time token consumption:
-- **Input tokens**: Prompt + conversation history
+- **Input tokens**: Prompt + conversation history/context
 - **Output tokens**: Assistant's response  
 - **Total tokens**: Complete request cost
 
@@ -129,13 +150,13 @@ Every response shows real-time token consumption:
 
 ### Session 1: LLM Primitives
 - **Location**: `session_1/primitives/`
-- **Focus**: Basic Azure OpenAI integration and stateless vs stateful concepts
-- **Key File**: `agent_primitives.py` - Interactive demonstrations
+- **Focus**: Basic Azure OpenAI integration, stateless vs stateful concepts, and context understanding
+- **Key Files**: 
+  - `stateless_chat.py` - Basic stateless interactions
+  - `stateless_chat_with_context.py` - Context-based Q&A demonstration
+  - `stateful_chat.py` - Conversation history management
+  - `tools_chat.py` - Function calling capabilities
 
-### Future Sessions
-- Agent frameworks and abstractions
-- Advanced conversation management
-- Multi-agent systems
 
 ## 🛠 Environment Variables
 
@@ -154,22 +175,18 @@ AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name
 ai-tech-coffee-hours/
 ├── session_1/
 │   ├── primitives/
-│   │   └── agent_primitives.py    # Interactive LLM demonstrations
+│   │   ├── shared_utils.py               # Azure OpenAI client utilities
+│   │   ├── stateless_chat.py             # Basic stateless chat
+│   │   ├── stateless_chat_with_context.py # Context-based Q&A
+│   │   ├── stateful_chat.py              # Chat with conversation history
+│   │   └── tools_chat.py                  # Function calling demo
 │   └── framework/
-│       ├── agent_framework.py     # Framework abstractions (planned)
-│       └── artisan_agent.py       # Specialized agents (planned)
-├── .env.example                   # Environment template
-├── pyproject.toml                 # Dependencies and project config
-└── main.py                        # Basic entry point
+│       ├── agent_framework.py             # Framework abstractions (planned)
+│       └── artisan_agent.py               # Decision-making agent
+├── .env.example                           # Environment template
+├── pyproject.toml                         # Dependencies and project config
+└── main.py                                # Interactive menu entry point
 ```
-
-## 🎓 Educational Goals
-
-This repository is designed for:
-- **Understanding LLM fundamentals** through hands-on interaction
-- **Learning token economics** and cost management
-- **Building practical experience** with Azure OpenAI
-- **Progressive skill development** from primitives to frameworks
 
 ## 📄 License
 

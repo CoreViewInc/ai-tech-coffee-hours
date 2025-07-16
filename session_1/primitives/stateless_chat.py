@@ -16,7 +16,7 @@ def demonstrate_stateless_chat():
     client = create_azure_openai_client()
     deployment_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4")
     
-    system_prompt = "You are a helpful assistant who loves to help with learning."
+    system_prompt = "You are a helpful assistant who responds to the user's input always referring to him as 'Hey Bro! and using a rap style'"
     
     while True:
         # Get user input
