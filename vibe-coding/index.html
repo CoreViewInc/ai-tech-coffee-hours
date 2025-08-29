@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Qdrant Vector Size Tool</title>
+    <style>
+      :root { --bg: #0f172a; --panel: #111827; --text: #e5e7eb; --muted: #9ca3af; --accent: #22d3ee; }
+      html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; }
+      body { background: radial-gradient(1000px 600px at 10% 0%, #111827 0%, #0f172a 60%); color: var(--text); display: grid; place-items: start center; padding: 48px 16px; }
+      .container { width: min(900px, 100%); background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid #1f2937; border-radius: 16px; padding: 20px 20px 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+      h1 { margin: 0 0 8px; font-size: 20px; letter-spacing: 0.2px; }
+      p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+      textarea { width: 100%; min-height: 200px; background: #0b1220; color: var(--text); border: 1px solid #1f2937; border-radius: 10px; padding: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; line-height: 1.4; resize: vertical; }
+      .row { display: flex; gap: 12px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+      button { appearance: none; border: 1px solid #1f2937; background: linear-gradient(180deg, #0ea5e9 0%, #06b6d4 100%); color: #001018; font-weight: 600; padding: 10px 14px; border-radius: 10px; cursor: pointer; box-shadow: 0 6px 20px rgba(34, 211, 238, 0.25); }
+      button.secondary { background: #0b1220; color: var(--text); }
+      .out { margin-top: 12px; background: #0b1220; border: 1px solid #1f2937; border-radius: 10px; padding: 12px; font-size: 14px; }
+      .small { color: var(--muted); font-size: 12px; }
+      code { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Qdrant Vector Size Tool</h1>
+      <p>Paste a vector (JSON array or comma‑separated floats) and compute its dimensionality.</p>
+
+      <textarea id="vectorInput" spellcheck="false" placeholder='Examples:
+[0.12, -0.34, 0.56]
+0.12, -0.34, 0.56
+{"vector": [0.1, 0.2, 0.3]}
+'></textarea>
+
+      <div class="row">
+        <button id="calcBtn">Calculate Size</button>
+        <button class="secondary" id="clearBtn">Clear</button>
+        <span id="hint" class="small">Works with arrays up to thousands of dims.</span>
+      </div>
+
+      <div id="output" class="out" aria-live="polite">Vector length (dimensions): —</div>
+    </div>
+
+    <script>
+      function tryJsonParse(text) {
+        try { return JSON.parse(text); } catch { return undefined; }
+      }
+
+      function coerceToArray(raw) {
+        // If already an array
+        if (Array.isArray(raw)) return raw;
+        // If it looks like a Qdrant object with a vector field
+        if (raw && typeof raw === 'object') {
+          if (Array.isArray(raw.vector)) return raw.vector;
+          if (raw.payload && Array.isArray(raw.payload.vector)) return raw.payload.vector;
+        }
+        return undefined;
+      }
+
+      function parseVector(input) {
+        if (!input) return [];
+
+        // 1) Try JSON parse (array or object with .vector)
+        const json = tryJsonParse(input);
+        const fromJson = coerceToArray(json);
+        if (fromJson) return fromJson.map(Number).filter(n => Number.isFinite(n));
+
+        // 2) Fallback: strip brackets and split by comma/whitespace
+        const stripped = input.replace(/[\[\]\n\r]/g, ' ');
+        const parts = stripped.split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+        const nums = parts.map(Number).filter(n => Number.isFinite(n));
+        return nums;
+      }
+
+      function formatNumber(n) {
+        return Number(n).toLocaleString(undefined, { maximumFractionDigits: 6 });
+      }
+
+      function onCalculate() {
+        const input = document.getElementById('vectorInput').value;
+        const vec = parseVector(input);
+        const out = document.getElementById('output');
+        if (!vec.length) {
+          out.textContent = 'No valid numbers found. Paste a JSON array or comma-separated floats.';
+          return;
+        }
+
+        // Dimensions (length) and optional L2 norm for convenience
+        const dims = vec.length;
+        let msg = `Vector length (dimensions): ${dims}`;
+        // Compute L2 norm as an extra helpful metric
+        const l2 = Math.sqrt(vec.reduce((s, x) => s + x * x, 0));
+        msg += ` | L2 norm: ${formatNumber(l2)}`;
+        out.textContent = msg;
+      }
+
+      function onClear() {
+        document.getElementById('vectorInput').value = '';
+        document.getElementById('output').textContent = 'Vector length (dimensions): —';
+      }
+
+      document.getElementById('calcBtn').addEventListener('click', onCalculate);
+      document.getElementById('clearBtn').addEventListener('click', onClear);
+    </script>
+  </body>
+  </html>
+

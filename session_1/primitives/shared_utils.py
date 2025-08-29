@@ -1,4 +1,5 @@
 import os
+from typing import List, Optional
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 
@@ -14,12 +15,26 @@ def create_azure_openai_client():
     - AZURE_OPENAI_API_VERSION
     """
     client = AzureOpenAI(
-        azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4.1"),
         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
         api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview"),
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
+        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     )
     return client
+
+def embed_texts(texts: List[str], model: Optional[str] = None) -> List[List[float]]:
+    """Create embeddings for a list of texts using the specified Azure deployment.
+
+    If `model` is None, falls back to env `AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME`
+    (default: text-embedding-3-small).
+    """
+    client = create_azure_openai_client()
+    deployment = model or os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME", "text-embedding-3-small")
+    resp = client.embeddings.create(model=deployment, input=texts)
+    return [d.embedding for d in resp.data]
+
+
+def embed_query(text: str, model: Optional[str] = None) -> List[float]:
+    return embed_texts([text], model=model)[0]
 
 def single_chat_completion(client, deployment_name, system_prompt, user_message):
     """
